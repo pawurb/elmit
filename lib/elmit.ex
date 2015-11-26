@@ -7,27 +7,33 @@ defmodule Elmit do
   def main(args) do
     opts = args
     |> parse_args
-
-    response = opts
-    |> construct_text_url
-    |> HTTPotion.get
-
-    translation = extract_translation(response)
-    synonyms = if opts[:s] do
-      extract_synonyms(response)
-    else
-      ""
-    end
-
-    IO.puts "#{translation} \n#{synonyms}"
-
-    if opts[:t] do
-      sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
-      sound_opts
-      |> construct_sound_url
+    if opts do
+      response = opts
+      |> construct_text_url
       |> HTTPotion.get
-      |> handle_sound_response
+
+      translation = extract_translation(response)
+      synonyms = if opts[:s] do
+        extract_synonyms(response)
+      else
+        ""
+      end
+
+      IO.puts "#{translation} \n#{synonyms}"
+
+      if opts[:t] do
+        sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
+        sound_opts
+        |> construct_sound_url
+        |> HTTPotion.get
+        |> handle_sound_response
+      end
     end
+  end
+
+  defp parse_args([]) do
+    IO.puts "Missing opts: try 'elmit --from=en --to=es --text='hey cowboy where is your horse'"
+    false
   end
 
   defp parse_args(args) do
