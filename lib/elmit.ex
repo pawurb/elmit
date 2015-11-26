@@ -9,8 +9,7 @@ defmodule Elmit do
 
     response = opts
     |> construct_url
-    |> issue_request
-    IO.puts(inspect(opts))
+    |> HTTPotion.get
 
     translation = handle_response(response, opts)
     IO.puts translation
@@ -34,10 +33,6 @@ defmodule Elmit do
     "#{host}/translate_a/single?client=t&sl=#{opts[:from]}&tl=#{opts[:to]}&hl=pl&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&otf=2&srcrom=1&ssel=3&tsel=6&kc=2&tk=522578&q=#{URI.encode(opts[:text])}"
   end
 
-  defp issue_request(url) do
-    HTTPotion.get(url)
-  end
-
   defp handle_response(%HTTPotion.Response{body: body}, opts) do
     translation = body
     |> String.split("[[")
@@ -53,10 +48,10 @@ defmodule Elmit do
       |> tl
       |> List.last
 
-      if String.contains?(raw_synonyms, "[") do
-        synonyms = '---'
+      synonyms = if String.contains?(raw_synonyms, "[") do
+        '---'
       else
-        synonyms = raw_synonyms
+        raw_synonyms
         |> String.rstrip(?])
         |> String.replace(",\"", " ")
         |> String.replace("\"", ",")
