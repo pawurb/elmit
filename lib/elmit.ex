@@ -12,17 +12,22 @@ defmodule Elmit do
     |> construct_text_url
     |> HTTPotion.get
 
-    translation = handle_text_response(response, opts)
-    IO.puts translation
+    translation = extract_translation(response)
+    synonyms = if opts[:s] do
+      extract_synonyms(response, opts)
+    else
+      ""
+    end
+
+    IO.puts "#{translation} #{synonyms}"
+
     if opts[:t] do
-      opts
+      sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
+      IO.puts inspect(sound_opts)
+      sound_opts
       |> construct_sound_url
       |> HTTPotion.get
       |> handle_sound_response
-
-      IO.puts "play sound"
-    else
-      IO.puts "no sound"
     end
   end
 
@@ -42,16 +47,17 @@ defmodule Elmit do
     "#{@host}/translate_tts?ie=UTF-8&tl=#{opts[:to]}&total=1&idx=0&textlen=5&tk=735012&client=t&q=#{URI.encode(opts[:text])}"
   end
 
-  defp handle_text_response(%HTTPotion.Response{body: body}, opts) do
-    translation = body
+  defp extract_translation(%HTTPotion.Response{body: body}) do
+    body
     |> String.split("[[")
     |> tl
     |> List.first
     |> String.split("\"")
     |> tl
     |> List.first
+  end
 
-    if opts[:s] do
+  defp extract_synonyms(%HTTPotion.Response{body: body}, opts) do
       raw_synonyms = body
       |> String.split("[[")
       |> tl
@@ -67,11 +73,7 @@ defmodule Elmit do
         |> String.rstrip(?,)
         |> String.lstrip(?,)
       end
-      "=> #{translation}
-=> Synonyms: #{synonyms}"
-    else
-      "=> #{translation}"
-    end
+      "=> Synonyms: #{synonyms}"
   end
 
   defp handle_sound_response(%HTTPotion.Response{body: body}) do
@@ -83,6 +85,6 @@ defmodule Elmit do
 
     file_path = Path.expand("#{path}/sound.mpeg")
     File.write(file_path, body, [:binary])
-    System.cmd("mpg123", [file_path])
+    System.cmd("mpg123", [file_path], stderr_to_stdout: true)
   end
 end
