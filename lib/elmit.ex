@@ -14,16 +14,15 @@ defmodule Elmit do
 
     translation = extract_translation(response)
     synonyms = if opts[:s] do
-      extract_synonyms(response, opts)
+      extract_synonyms(response)
     else
       ""
     end
 
-    IO.puts "#{translation} #{synonyms}"
+    IO.puts "#{translation} \n#{synonyms}"
 
     if opts[:t] do
       sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
-      IO.puts inspect(sound_opts)
       sound_opts
       |> construct_sound_url
       |> HTTPotion.get
@@ -57,21 +56,33 @@ defmodule Elmit do
     |> List.first
   end
 
-  defp extract_synonyms(%HTTPotion.Response{body: body}, opts) do
+  defp extract_synonyms(%HTTPotion.Response{body: body}) do
       raw_synonyms = body
       |> String.split("[[")
       |> tl
+      |> tl
+      |> List.first
+      |> String.split("[")
       |> List.last
+      |> String.split(",")
+      |> Enum.join(", ")
+      |> String.replace(",,", ",")
 
-      synonyms = if String.contains?(raw_synonyms, "[") do
+      synonyms = if String.contains?(raw_synonyms, "1") do
         '---'
       else
         raw_synonyms
         |> String.rstrip(?])
+        |> String.replace("]", "")
+        |> String.replace(",,", ",")
         |> String.replace(",\"", " ")
         |> String.replace("\"", ",")
         |> String.rstrip(?,)
+        |> String.rstrip(? )
+        |> String.rstrip(?,)
         |> String.lstrip(?,)
+        |> String.replace(",,", ",")
+        |> String.replace(" ,", " ")
       end
       "=> Synonyms: #{synonyms}"
   end
