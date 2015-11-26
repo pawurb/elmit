@@ -32,7 +32,7 @@ defmodule Elmit do
   end
 
   defp parse_args([]) do
-    IO.puts "Missing opts: try 'elmit --from=en --to=es --text='hey cowboy where is your horse'"
+    IO.puts "Missing opts: try './elmit --from=en --to=es --text='hey cowboy where is your horse'"
     false
   end
 
@@ -85,7 +85,6 @@ defmodule Elmit do
         |> String.replace("\"", ",")
         |> String.rstrip(?,)
         |> String.rstrip(? )
-        |> String.rstrip(?,)
         |> String.lstrip(?,)
         |> String.replace(",,", ",")
         |> String.replace(" ,", " ")
