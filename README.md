@@ -1,19 +1,26 @@
 # Elmit
 
-**TODO: Add description**
+Google Translate with speech synthesis in your terminal as Hex package.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+* `brew install elixir`
+* `mix escript.build`
 
-  1. Add elmit to your list of dependencies in `mix.exs`:
+## Usage
 
-        def deps do
-          [{:elmit, "~> 0.0.1"}]
-        end
+* `./elmit --from=en --to=es --text="hoy cowboy where is your horse" --t`
+* `./elmit --from=en --to=es --text="boy" --s`
 
-  2. Ensure elmit is started before your application:
+## Requirements
 
-        def application do
-          [applications: [:elmit]]
-        end
+To use speech synthesis you need to have mpg123 installed.
+
+For Ubuntu:
+
+    sudo apt-get install mpg123
+
+For MacOSX:
+
+    brew install mpg123
+
