@@ -12,7 +12,7 @@ defmodule Elmit do
     |> issue_request
 
     translation = handle_response(response, opts)
-    IO.puts "=> #{translation}"
+    IO.puts translation
     if opts[:t] do
       IO.puts "play sound"
     else
@@ -45,10 +45,21 @@ defmodule Elmit do
     |> String.split("\"")
     |> tl
     |> List.first
+
     if opts[:s] do
-      "#{translation} + synonyms"
+      synonyms = body
+      |> String.split("[[")
+      |> tl
+      |> List.last
+      |> String.rstrip(?])
+      |> String.replace(",\"", " ")
+      |> String.replace("\"", ",")
+      |> String.rstrip(?,)
+      |> String.lstrip(?,)
+      "=> #{translation}
+=> Synonyms: #{synonyms}"
     else
-      translation
+      "=> #{translation}"
     end
   end
 end
