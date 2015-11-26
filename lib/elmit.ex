@@ -31,12 +31,12 @@ defmodule Elmit do
     end
   end
 
-  defp parse_args([]) do
+  def parse_args([]) do
     IO.puts "Missing opts: try './elmit --from=en --to=es --text='hey cowboy where is your horse'"
     false
   end
 
-  defp parse_args(args) do
+  def parse_args(args) do
     {options, _, _} = OptionParser.parse(args,
       switches: [from: :string, to: :string, text: :string],
       strict: [t: :boolean]
@@ -84,7 +84,6 @@ defmodule Elmit do
         |> String.replace(",\"", " ")
         |> String.replace("\"", ",")
         |> String.rstrip(?,)
-        |> String.rstrip(? )
         |> String.lstrip(?,)
         |> String.replace(",,", ",")
         |> String.replace(" ,", " ")
