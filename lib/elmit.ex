@@ -7,10 +7,11 @@ defmodule Elmit do
     opts = args
     |> parse_args
 
-    translation = opts
+    response = opts
     |> construct_url
     |> issue_request
-    |> handle_response
+
+    translation = handle_response(response, opts)
     IO.puts "=> #{translation}"
     if opts[:t] do
       IO.puts "play sound"
@@ -36,13 +37,18 @@ defmodule Elmit do
     HTTPotion.get(url)
   end
 
-  defp handle_response(%HTTPotion.Response{body: body}) do
-    body
+  defp handle_response(%HTTPotion.Response{body: body}, opts) do
+    translation = body
     |> String.split("[[")
     |> tl
     |> List.first
     |> String.split("\"")
     |> tl
     |> List.first
+    if opts[:s] do
+      "#{translation} + synonyms"
+    else
+      translation
+    end
   end
 end
