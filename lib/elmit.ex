@@ -15,6 +15,11 @@ defmodule Elmit do
     translation = handle_text_response(response, opts)
     IO.puts translation
     if opts[:t] do
+      opts
+      |> construct_sound_url
+      |> HTTPotion.get
+      |> handle_sound_response
+
       IO.puts "play sound"
     else
       IO.puts "no sound"
@@ -31,6 +36,10 @@ defmodule Elmit do
 
   defp construct_text_url(opts) do
     "#{@host}/translate_a/single?client=t&sl=#{opts[:from]}&tl=#{opts[:to]}&hl=pl&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&otf=2&srcrom=1&ssel=3&tsel=6&kc=2&tk=522578&q=#{URI.encode(opts[:text])}"
+  end
+
+  defp construct_sound_url(opts) do
+    "#{@host}/translate_tts?ie=UTF-8&tl=#{opts[:to]}&total=1&idx=0&textlen=5&tk=735012&client=t&q=#{URI.encode(opts[:text])}"
   end
 
   defp handle_text_response(%HTTPotion.Response{body: body}, opts) do
@@ -63,5 +72,17 @@ defmodule Elmit do
     else
       "=> #{translation}"
     end
+  end
+
+  defp handle_sound_response(%HTTPotion.Response{body: body}) do
+    path = "~/.elmit"
+    expanded_path = Path.expand(path)
+    if !File.exists?(expanded_path) do
+      File.mkdir!(expanded_path)
+    end
+
+    file_path = Path.expand("#{path}/sound.mpeg")
+    File.write(file_path, body, [:binary])
+    System.cmd("mpg123", [file_path])
   end
 end
