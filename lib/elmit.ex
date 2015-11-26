@@ -4,8 +4,7 @@ require Logger
 defmodule Elmit do
   def main(_args) do
     IO.puts "Hello elmit!"
-    response = HTTPotion.get "http://dupa.pl"
-    handle_response(response)
+    HTTPotion.get("http://dupa.pl") |> handle_response
   end
 
   # def request(id, url) do
