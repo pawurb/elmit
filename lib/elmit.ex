@@ -4,13 +4,11 @@ require Logger
 defmodule Elmit do
 
   def main(args) do
-    IO.puts "Hello elmit!"
-    opts = parse_args(args)
-
-    opts
+    parse_args(args)
     |> construct_url
     |> issue_request
     |> handle_response
+    |> IO.puts
   end
 
   defp parse_args(args) do
@@ -31,9 +29,7 @@ defmodule Elmit do
 
   defp construct_url(opts) do
     host = "https://translate.google.com"
-    url = "#{host}/translate_a/single?client=t&sl=#{opts[:from]}&tl=#{opts[:to]}&hl=pl&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&otf=2&srcrom=1&ssel=3&tsel=6&kc=2&tk=522578&q=#{opts[:text]}"
-    IO.puts url
-    url
+    "#{host}/translate_a/single?client=t&sl=#{opts[:from]}&tl=#{opts[:to]}&hl=pl&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&otf=2&srcrom=1&ssel=3&tsel=6&kc=2&tk=522578&q=#{opts[:text]}"
   end
 
   defp issue_request(url) do
@@ -41,7 +37,13 @@ defmodule Elmit do
   end
 
   defp handle_response(response) do
-    IO.puts "#{response.body}"
+    response.body
+    |> String.split("[[")
+    |> tl
+    |> List.first
+    |> String.split("\"")
+    |> tl
+    |> List.first
   end
 
   # defp handle_response(%HTTPoison.Response{status_code: status_code}, id) do
