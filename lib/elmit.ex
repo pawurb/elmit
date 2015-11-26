@@ -10,6 +10,7 @@ defmodule Elmit do
     response = opts
     |> construct_url
     |> issue_request
+    IO.puts(inspect(opts))
 
     translation = handle_response(response, opts)
     IO.puts translation
@@ -30,7 +31,7 @@ defmodule Elmit do
 
   defp construct_url(opts) do
     host = "https://translate.google.com"
-    "#{host}/translate_a/single?client=t&sl=#{opts[:from]}&tl=#{opts[:to]}&hl=pl&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&otf=2&srcrom=1&ssel=3&tsel=6&kc=2&tk=522578&q=#{opts[:text]}"
+    "#{host}/translate_a/single?client=t&sl=#{opts[:from]}&tl=#{opts[:to]}&hl=pl&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&otf=2&srcrom=1&ssel=3&tsel=6&kc=2&tk=522578&q=#{URI.encode(opts[:text])}"
   end
 
   defp issue_request(url) do
