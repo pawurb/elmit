@@ -22,4 +22,19 @@ defmodule Elmit.Mixfile do
       {:httpotion, "~> 2.1.0"}
     ]
   end
+
+  defp description do
+    """
+    Google Translate in your terminal as Mix package.
+    """
+  end
+
+  defp package do
+    [
+      files: ["lib/elmit.ex", "mix.exs"],
+      maintainers: ["Pawel Urbanek"],
+      licenses: ["MIT"],
+      links: %{ "GitHub" => "https://github.com/pawurb/elmit" }
+    ]
+  end
 end
