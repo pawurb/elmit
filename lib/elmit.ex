@@ -48,15 +48,21 @@ defmodule Elmit do
     |> List.first
 
     if opts[:s] do
-      synonyms = body
+      raw_synonyms = body
       |> String.split("[[")
       |> tl
       |> List.last
-      |> String.rstrip(?])
-      |> String.replace(",\"", " ")
-      |> String.replace("\"", ",")
-      |> String.rstrip(?,)
-      |> String.lstrip(?,)
+
+      if String.contains?(raw_synonyms, "[") do
+        synonyms = '---'
+      else
+        synonyms = raw_synonyms
+        |> String.rstrip(?])
+        |> String.replace(",\"", " ")
+        |> String.replace("\"", ",")
+        |> String.rstrip(?,)
+        |> String.lstrip(?,)
+      end
       "=> #{translation}
 => Synonyms: #{synonyms}"
     else
