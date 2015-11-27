@@ -20,7 +20,7 @@ defmodule Elmit do
     IO.puts "=> #{translation} #{synonyms}"
 
     if opts[:t] do
-      sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
+      sound_opts = List.keyreplace(opts, :text, 0, {:text, translation})
       sound_opts
       |> build_sound_url
       |> fetch
