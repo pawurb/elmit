@@ -33,46 +33,24 @@ defmodule Elmit do
       HTTPotion.get(url)
     rescue
       HTTPotion.HTTPError ->
-"""
-ELMIT: There seems to be a problem with your internet connection
-""" |> IO.write
+      Elmit.OutputManager.connection_problem
       System.halt(1)
     end
   end
 
   def parse_args([]) do
-"""
-=========ELMIT=========
-Usage:
-elmit 'source_language' 'target_language' 'text'
-
-Example:
-elmit en fr 'hey cowboy where is your horse?'
-=> 'hey cow-boy ou est votre cheval?'
-
-Options:
--t - speech synthesis
--s - synonyms list
-
-Check docs at: github.com/pawurb/elmit
-""" |> IO.write
+    Elmit.OutputManager.long_help
     System.halt(0)
   end
 
   def parse_args([_]) do
-    display_short_help
+    Elmit.OutputManager.wrong_data
     System.halt(0)
   end
 
   def parse_args([_, _]) do
-    display_short_help
+    Elmit.OutputManager.wrong_data
     System.halt(0)
-  end
-
-  defp display_short_help do
-"""
-ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
-""" |> IO.write
   end
 
   def parse_args(args) do
@@ -139,10 +117,7 @@ ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
       System.cmd("mpg123", [file_path], stderr_to_stdout: true)
     rescue
       ErlangError ->
-"""
-ELMIT: speech synthesis requires mpg123 installed.
-Please run 'brew install mpg123'
-""" |> IO.write
+      Elmit.OutputManager.missing_sound_player
       System.halt(0)
     end
   end

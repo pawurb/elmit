@@ -15,4 +15,10 @@ defmodule InputParserTest do
     assert parsed == expected
   end
 
+  test "extracting -h flag" do
+    user_args = ["-h"]
+    expected = [h: true]
+    parsed = Elmit.InputParser.call(user_args)
+    assert parsed == expected
+  end
 end

@@ -3,8 +3,8 @@ defmodule Elmit.InputParser do
     [non_flags, flags] = seperate_flags(args)
     preparsed = [
       "--from=#{non_flags |> List.first}",
-      "--to=#{non_flags |> tl |> List.first}",
-      "--text=#{non_flags |> tl |> tl |> Enum.join(" ")}",
+      "--to=#{non_flags |> Enum.slice(1,1) |> List.first}",
+      "--text=#{non_flags |> Enum.slice(2,100) |> Enum.join(" ")}",
     ] ++ (flags |> Enum.map(fn(x) -> "-#{x}" end))
 
     {options, _, _} = OptionParser.parse(preparsed,
@@ -16,15 +16,15 @@ defmodule Elmit.InputParser do
         s: :boolean
       ]
     )
-    options
+    options |> Enum.reject(fn(arg) -> elem(arg, 1) == "" end)
   end
 
   defp seperate_flags(list) do
-    separator = fn(arg) ->
-      arg == "-t" || arg == "-s"
+    flas_selector = fn(arg) ->
+      arg == "-t" || arg == "-s" || arg == "-h"
     end
-    non_flags = list |> Enum.reject(separator)
-    flags = list |> Enum.filter(separator)
+    non_flags = list |> Enum.reject(flas_selector)
+    flags = list |> Enum.filter(flas_selector)
 
     [non_flags, flags]
   end
