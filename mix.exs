@@ -19,7 +19,8 @@ defmodule Elmit.Mixfile do
   defp deps do
     [
       {:ibrowse, github: "cmullaparthi/ibrowse", tag: "v4.1.2"},
-      {:httpotion, "~> 2.1.0"}
+      {:httpotion, "~> 2.1.0"},
+      {:mock, "~> 0.1.1", only: :test}
     ]
   end
 

@@ -38,7 +38,7 @@ defmodule Elmit do
 """
 ELMIT: There seems to be a problem with your internet connection
 """ |> IO.write
-      System.halt(0)
+      System.halt(1)
     end
   end
 
@@ -105,6 +105,7 @@ ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
   end
 
   defp extract_translation(%HTTPotion.Response{body: body}) do
+    IO.puts body
     body
     |> String.split("[[")
     |> tl
