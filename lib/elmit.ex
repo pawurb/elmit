@@ -7,27 +7,25 @@ defmodule Elmit do
   def main(args) do
     opts = parse_args(args)
 
-    if opts do
-      response = opts
-      |> construct_text_url
+    response = opts
+    |> construct_text_url
+    |> HTTPotion.get
+
+    translation = extract_translation(response)
+    synonyms = if opts[:s] do
+      extract_synonyms(response)
+    else
+      ""
+    end
+
+    IO.puts "=> #{translation} #{synonyms}"
+
+    if opts[:t] do
+      sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
+      sound_opts
+      |> construct_sound_url
       |> HTTPotion.get
-
-      translation = extract_translation(response)
-      synonyms = if opts[:s] do
-        extract_synonyms(response)
-      else
-        ""
-      end
-
-      IO.puts "=> #{translation} #{synonyms}"
-
-      if opts[:t] do
-        sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
-        sound_opts
-        |> construct_sound_url
-        |> HTTPotion.get
-        |> handle_sound_response
-      end
+      |> handle_sound_response
     end
   end
 
@@ -47,29 +45,40 @@ Options:
 
 Check docs at: github.com/pawurb/elmit
 """ |> IO.puts
-    false
+    System.halt(0)
   end
 
-  def parse_args([a]) do
+  def parse_args([_]) do
+    display_short_help
+    System.halt(0)
+  end
+
+  def parse_args([_, _]) do
+    display_short_help
+    System.halt(0)
+  end
+
+  defp display_short_help do
 """
 ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
 """ |> IO.puts
-    false
-  end
-
-  defp display_help do
   end
 
   def parse_args(args) do
     preparsed = [
-      "--from=#{List.first(args)}",
-      "--to=#{List.first(tl(args))}",
-      "--text=#{List.first(tl(tl(args)))}",
+      "--from=#{args |> List.first}",
+      "--to=#{args |> tl |> List.first}",
+      "--text=#{args |> tl |> tl |> List.first}",
     ] ++ (args |> Enum.slice(3, 2) |> Enum.map(fn(x) -> "-#{x}" end))
 
     {options, _, _} = OptionParser.parse(preparsed,
-      switches: [from: :string, to: :string, text: :string],
-      strict: [t: :boolean]
+      switches: [
+        from: :string,
+        to: :string,
+        text: :string,
+        t: :boolean,
+        s: :boolean
+      ]
     )
     options
   end
