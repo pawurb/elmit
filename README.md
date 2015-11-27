@@ -26,16 +26,21 @@ elmit fr en "qui est votre papa?"
 => "Who's Your Daddy?"
 ```
 
+Parenthesis are not necessary for text data input:
+```elixir
+termit fr ru qui est votre papa?
+=> "Кто твой папочка?"
+
 #### Speech synthesis
 
 Specify a **-t** (talk) flag to use speech synthesis (requires mpg123):
-``` elixir
+```elixir
 elmit en zh "hey cowboy where is your horse?" -t
 => "嘿，牛仔是你的马在哪里？" # and a chinese voice says something about a horse
 ```
 
 You can use elmit as a speech synthesizer of any supported language without having to translate anything:
-``` elixir
+```elixir
 elmit en en "hold your horses cowboy !" -t
 => "hold your horses cowboy !" # and an english voice asks you to hold on
 ```
@@ -43,7 +48,7 @@ elmit en en "hold your horses cowboy !" -t
 #### Synonyms
 
 Specify a **-s** (synonyms) flag to get the list of synonyms if available:
-``` elixir
+```elixir
 elmit es en muchacho -s
 => boy
 => Synonyms: boy, lad, youngster, laddie, cully
