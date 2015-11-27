@@ -5,8 +5,8 @@ defmodule Elmit do
   @host "https://translate.google.com"
 
   def main(args) do
-    opts = args
-    |> parse_args
+    opts = parse_args(args)
+
     if opts do
       response = opts
       |> construct_text_url
@@ -37,7 +37,13 @@ defmodule Elmit do
   end
 
   def parse_args(args) do
-    {options, _, _} = OptionParser.parse(args,
+    preparsed = [
+      "--from=#{List.first(args)}",
+      "--to=#{List.first(tl(args))}",
+      "--text=#{List.first(tl(tl(args)))}",
+    ] ++ (args |> Enum.slice(3, 2) |> Enum.map(fn(x) -> "-#{x}" end))
+
+    {options, _, _} = OptionParser.parse(preparsed,
       switches: [from: :string, to: :string, text: :string],
       strict: [t: :boolean]
     )
