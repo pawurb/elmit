@@ -104,8 +104,7 @@ ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
     "#{@host}/translate_tts?ie=UTF-8&tl=#{to}&total=1&idx=0&textlen=5&tk=735012&client=t&q=#{URI.encode(text)}"
   end
 
-  defp extract_translation(%HTTPotion.Response{body: body}) do
-    IO.puts body
+  defp extract_translation(%{ body: body }) do
     body
     |> String.split("[[")
     |> tl
@@ -115,7 +114,7 @@ ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
     |> List.first
   end
 
-  defp extract_synonyms(%HTTPotion.Response{body: body}) do
+  defp extract_synonyms(%{ body: body }) do
       raw_synonyms = body
       |> String.split("[[")
       |> tl
@@ -144,7 +143,7 @@ ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
       "\n=> Synonyms: #{synonyms}"
   end
 
-  defp handle_sound_response(%HTTPotion.Response{body: body}) do
+  defp handle_sound_response(%{ body: body }) do
     path = "~/.elmit"
     expanded_path = Path.expand(path)
     if !File.exists?(expanded_path) do
