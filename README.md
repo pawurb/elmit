@@ -4,6 +4,7 @@ Google Translate with speech synthesis in your terminal as Hex package.
 
 ## Installation
 
+* Clone repo and `cd` inside
 * `brew install elixir`
 * `mix deps.get`
 * `mix escript.build`
