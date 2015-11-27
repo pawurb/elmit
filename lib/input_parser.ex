@@ -1,10 +1,11 @@
 defmodule Elmit.InputParser do
   def call(args) do
+    [non_flags, flags] = seperate_flags(args)
     preparsed = [
-      "--from=#{args |> List.first}",
-      "--to=#{args |> tl |> List.first}",
-      "--text=#{args |> tl |> tl |> List.first}",
-    ] ++ (args |> Enum.slice(3, 2) |> Enum.map(fn(x) -> "-#{x}" end))
+      "--from=#{non_flags |> List.first}",
+      "--to=#{non_flags |> tl |> List.first}",
+      "--text=#{non_flags |> tl |> tl |> Enum.join(" ")}",
+    ] ++ (flags |> Enum.map(fn(x) -> "-#{x}" end))
 
     {options, _, _} = OptionParser.parse(preparsed,
       switches: [
@@ -16,5 +17,15 @@ defmodule Elmit.InputParser do
       ]
     )
     options
+  end
+
+  defp seperate_flags(list) do
+    separator = fn(arg) ->
+      arg == "-t" || arg == "-s"
+    end
+    non_flags = list |> Enum.reject(separator)
+    flags = list |> Enum.filter(separator)
+
+    [non_flags, flags]
   end
 end
