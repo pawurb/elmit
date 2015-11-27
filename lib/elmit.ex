@@ -1,5 +1,3 @@
-require HTTPotion
-
 defmodule Elmit do
   @host "https://translate.google.com"
 
