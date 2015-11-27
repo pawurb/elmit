@@ -9,9 +9,6 @@ defmodule Elmit.Mixfile do
      deps: deps]
   end
 
-  # Configuration for the OTP application
-  #
-  # Type "mix help compile.app" for more information
   def application do
     [applications: [:httpotion]]
   end
@@ -25,8 +22,8 @@ defmodule Elmit.Mixfile do
 
   defp description do
     """
-    Google Translate in your terminal as Mix package.
-    """
+Google Translate with speech synthesis in your terminal as Hex package.
+"""
   end
 
   defp package do
