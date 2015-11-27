@@ -8,7 +8,7 @@ defmodule Elmit do
     opts = parse_args(args)
 
     response = opts
-    |> construct_text_url
+    |> build_text_url
     |> HTTPotion.get
 
     translation = extract_translation(response)
@@ -23,7 +23,7 @@ defmodule Elmit do
     if opts[:t] do
       sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
       sound_opts
-      |> construct_sound_url
+      |> build_sound_url
       |> HTTPotion.get
       |> handle_sound_response
     end
@@ -44,7 +44,7 @@ Options:
 -s - synonyms list
 
 Check docs at: github.com/pawurb/elmit
-""" |> IO.puts
+""" |> IO.write
     System.halt(0)
   end
 
@@ -61,7 +61,7 @@ Check docs at: github.com/pawurb/elmit
   defp display_short_help do
 """
 ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
-""" |> IO.puts
+""" |> IO.write
   end
 
   def parse_args(args) do
@@ -83,11 +83,11 @@ ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
     options
   end
 
-  defp construct_text_url(opts) do
+  defp build_text_url(opts) do
     "#{@host}/translate_a/single?client=t&sl=#{opts[:from]}&tl=#{opts[:to]}&hl=pl&dt=bd&dt=ex&dt=ld&dt=md&dt=qca&dt=rw&dt=rm&dt=ss&dt=t&dt=at&ie=UTF-8&oe=UTF-8&otf=2&srcrom=1&ssel=3&tsel=6&kc=2&tk=522578&q=#{URI.encode(opts[:text])}"
   end
 
-  defp construct_sound_url(opts) do
+  defp build_sound_url(opts) do
     "#{@host}/translate_tts?ie=UTF-8&tl=#{opts[:to]}&total=1&idx=0&textlen=5&tk=735012&client=t&q=#{URI.encode(opts[:text])}"
   end
 
