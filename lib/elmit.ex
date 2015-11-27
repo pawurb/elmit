@@ -32,7 +32,7 @@ defmodule Elmit do
     try do
       HTTPotion.get(url)
     rescue
-     HTTPotion.HTTPError ->
+      HTTPotion.HTTPError ->
 """
 ELMIT: There seems to be a problem with your internet connection
 """ |> IO.write
@@ -150,6 +150,15 @@ ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
 
     file_path = Path.expand("#{path}/sound.mpeg")
     File.write(file_path, body, [:binary])
-    System.cmd("mpg123", [file_path], stderr_to_stdout: true)
+    try do
+      System.cmd("mpg123", [file_path], stderr_to_stdout: true)
+    rescue
+      ErlangError ->
+"""
+ELMIT: speech synthesis requires mpg123 installed.
+Please run 'brew install mpg123'
+""" |> IO.write
+      System.halt(0)
+    end
   end
 end
