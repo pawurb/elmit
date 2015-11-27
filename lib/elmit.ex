@@ -7,7 +7,7 @@ defmodule Elmit do
     opts = parse_args(args)
 
     response = opts
-    |> Enum.filter(fn(x) -> Enum.member?([:from, :to, :text], elem(x, 0)) end)
+    |> filter_keys([:from, :to, :text])
     |> build_text_url
     |> fetch
 
@@ -22,7 +22,7 @@ defmodule Elmit do
 
     if opts[:t] do
       opts
-      |> Enum.filter(fn(x) -> Enum.member?([:to, :text], elem(x, 0)) end)
+      |> filter_keys([:to, :text])
       |> List.keyreplace(:text, 0, {:text, translation})
       |> build_sound_url
       |> fetch
@@ -162,5 +162,10 @@ Please run 'brew install mpg123'
 """ |> IO.write
       System.halt(0)
     end
+  end
+
+  defp filter_keys(list, keys) do
+    list
+    |> Enum.filter(fn(x) -> Enum.member?(keys, elem(x, 0)) end)
   end
 end
