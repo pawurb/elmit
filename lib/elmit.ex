@@ -19,7 +19,7 @@ defmodule Elmit do
         ""
       end
 
-      IO.puts "#{translation} \n#{synonyms}"
+      IO.puts "=> #{translation} #{synonyms}"
 
       if opts[:t] do
         sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
@@ -32,8 +32,32 @@ defmodule Elmit do
   end
 
   def parse_args([]) do
-    IO.puts "Missing opts: try './elmit --from=en --to=es --text='hey cowboy where is your horse'"
+"""
+=========ELMIT=========
+Usage:
+elmit 'source_language' 'target_language' 'text'
+
+Example:
+elmit en fr 'hey cowboy where is your horse?'
+=> 'hey cow-boy ou est votre cheval?'
+
+Options:
+-t - speech synthesis
+-s - synonyms list
+
+Check docs at: github.com/pawurb/elmit
+""" |> IO.puts
     false
+  end
+
+  def parse_args([a]) do
+"""
+ELMIT: Wrong data. Example: 'elmit en es the cowboy' => 'el vaquero'
+""" |> IO.puts
+    false
+  end
+
+  defp display_help do
   end
 
   def parse_args(args) do
@@ -94,7 +118,7 @@ defmodule Elmit do
         |> String.replace(",,", ",")
         |> String.replace(" ,", " ")
       end
-      "=> Synonyms: #{synonyms}"
+      "\n=> Synonyms: #{synonyms}"
   end
 
   defp handle_sound_response(%HTTPotion.Response{body: body}) do

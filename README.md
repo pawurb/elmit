@@ -35,7 +35,7 @@ elmit en zh "hey cowboy where is your horse?" -t
 
 You can use elmit as a speech synthesizer of any supported language without having to translate anything:
 ``` elixir
-./elmit en en "hold your horses cowboy !" -t
+elmit en en "hold your horses cowboy !" -t
 => "hold your horses cowboy !" # and an english voice asks you to hold on
 ```
 
