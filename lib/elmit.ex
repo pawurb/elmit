@@ -1,5 +1,4 @@
 require HTTPotion
-require Logger
 
 defmodule Elmit do
   @host "https://translate.google.com"
@@ -9,7 +8,7 @@ defmodule Elmit do
 
     response = opts
     |> build_text_url
-    |> HTTPotion.get
+    |> fetch
 
     translation = extract_translation(response)
     synonyms = if opts[:s] do
@@ -24,8 +23,20 @@ defmodule Elmit do
       sound_opts = List.keydelete(opts, :text, 0) ++ [text: translation]
       sound_opts
       |> build_sound_url
-      |> HTTPotion.get
+      |> fetch
       |> handle_sound_response
+    end
+  end
+
+  def fetch(url) do
+    try do
+      HTTPotion.get(url)
+    rescue
+     HTTPotion.HTTPError ->
+"""
+ELMIT: There seems to be a problem with your internet connection
+""" |> IO.write
+      System.halt(0)
     end
   end
 
