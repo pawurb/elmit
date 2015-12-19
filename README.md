@@ -2,6 +2,10 @@
 
 Google Translate with speech synthesis in your terminal as Hex package.
 
+## Status
+
+Looks like Google blocked the APIs needed for it to work and project is no longer functional.
+
 ## Installation
 
 * Clone repo and `cd` inside
